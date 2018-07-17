@@ -1,0 +1,237 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>Chart</title>
+        <meta name="charset" content="uft-8">
+
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script type="text/javascript">
+            $(function(){
+                var socket = io();
+                var series;
+                Highcharts.setOptions({
+                    global: {
+                        useUTC: false
+                    },
+                    lang: {
+                        thousandsSep: ','
+                    }
+                });
+
+                chart = new Highcharts.Chart({
+                    chart: {
+                         backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+                            stops: [
+                                    [0, '#2a2a2b'],
+                                    [1, '#3e3e40']
+                                   ]
+                            },
+                        renderTo: 'container',
+                        type: 'spline',
+                        animation: Highcharts.svg, // don't animate in old IE
+                        marginRight: 10,
+                    },
+                    title: {
+                        text: 'Vehicles Sold every 10 seconds',
+                        style: {
+                                color: '#E0E0E3',
+                                textTransform: 'uppercase',
+                                fontSize: '20px'
+                                }
+                             },
+                    xAxis: {
+                        type: 'datetime',
+                        labels: {
+            style: {
+                color: '#E0E0E3'
+            }
+        },
+        lineColor: '#707073',
+        minorGridLineColor: '#505053',
+        tickColor: '#707073',
+                        tickPixelInterval: 360,
+
+                        title: {
+                            text: 'Time',
+                            style: {
+                                fontWeight: 'bold',
+                                color: '#E0E0E3'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        labels: {
+            style: {
+                color: '#E0E0E3'
+            }
+        },
+        lineColor: '#707073',
+        minorGridLineColor: '#505053',
+        tickColor: '#707073',
+                        title: {
+                            text: 'Total vehicles sold',
+                            style: {
+                                fontWeight: 'bold',
+                                color: '#E0E0E3'
+                            }
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: ''
+                        }]
+                    },
+                    tooltip: {
+                        formatter: function () {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                                Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' + Highcharts.numberFormat(this.y, 0);
+                        }
+                    },
+                    legend: {
+                        enabled: true
+                    },
+                    exporting: {
+                        enabled: true
+                    },
+                    series: [
+                        {
+                            name: 'MUVs',
+                            color: '#18f76a',
+                            data: (function () {
+                                // generate an array of random data
+                                var data = [],
+                                    time = (new Date()).getTime(),
+                                    i;
+                                for (i = -3; i <= 0; i += 1) {
+                                    data.push({
+                                        x: time + i * 1000,
+                                        y: 0
+                                    });
+                                }
+                                return data;
+                            }())
+                        },
+
+                        {
+                            name: 'Bikes',
+                            color: '#f718f7',
+                            data: (function () {
+                                // generate an array of random data
+                                var data = [],
+                                    time = (new Date()).getTime(),
+                                    i;
+                                for (i = -3; i <= 0; i += 1) {
+                                    data.push({
+                                        x: time + i * 1000,
+                                        y: 0
+                                    });
+                                }
+                                return data;
+                            }())
+                        },
+
+                        {
+                            name: 'SUVs',
+                            color: '#18f6f9',
+                            data: (function () {
+                                // generate an array of random data
+                                var data = [],
+                                    time = (new Date()).getTime(),
+                                    i;
+                                for (i = -3; i <= 0; i += 1) {
+                                    data.push({
+                                        x: time + i * 1000,
+                                        y: 0
+                                    });
+                                }
+                                return data;
+                            }())
+                        },
+
+                        {
+                            name: 'Jeeps',
+                            color: '#ff0202',
+                            data: (function () {
+                                // generate an array of random data
+                                var data = [],
+                                    time = (new Date()).getTime(),
+                                    i;
+                                for (i = -3; i <= 0; i += 1) {
+                                    data.push({
+                                        x: time + i * 1000,
+                                        y: 0
+                                    });
+                                }
+                                return data;
+                            }())
+                        },
+
+                        {
+                            name: 'Trucks',
+                            color: '#ffa201',
+                            data: (function () {
+                                // generate an array of random data
+                                var data = [],
+                                    time = (new Date()).getTime(),
+                                    i;
+                                for (i = -3; i <= 0; i += 1) {
+                                    data.push({
+                                        x: time + i * 1000,
+                                        y: 0
+                                    });
+                                }
+                                return data;
+                            }())
+                        }
+                    ]
+                });
+
+                socket.on('aggregator-message', function(data){
+                    if(typeof(data) !== "object"){
+                        data = JSON.parse(data);
+                    }
+                        
+                    console.log("====================");
+                    console.log(data);
+                    console.log("--------------------")
+                    
+                    if (data.product_name === 'MUVs') {
+                        chart.series[0].addPoint([(new Date()).getTime(), data.total], true, true);
+                        chart.redraw();
+                    }
+
+                    if (data.product_name === 'Bikes') {
+                        chart.series[1].addPoint([(new Date()).getTime(), data.total], true, true);
+                        chart.redraw();
+                    }
+
+                    if (data.product_name === 'SUVs') {
+                        chart.series[2].addPoint([(new Date()).getTime(), data.total], true, true);
+                        chart.redraw();
+                    }
+
+                    if (data.product_name === 'Jeeps') {
+                        chart.series[3].addPoint([(new Date()).getTime(), data.total], true, true);
+                        chart.redraw();
+                    }
+
+                    if (data.product_name === 'Trucks') {
+                        chart.series[4].addPoint([(new Date()).getTime(), data.total], true, true);
+                        chart.redraw();
+                    }
+
+
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <div id="container" style="height:100%; width:100%;">CHART<div>
+    </body>
+</html>
