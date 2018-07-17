@@ -5,7 +5,7 @@ NPM Packages that I installed in order to create the realtime dashboard :-
 	npm install --save mongo-oplog-watch
 	npm install --save nodemon
 
-In case mongodb is use, will have to create these two databases :-
+In case mongodb is used, will have to create these two databases :-
 
 	mongod --port 27017 --dbpath C:\Temp\data\rs1 --replSet rs
 
