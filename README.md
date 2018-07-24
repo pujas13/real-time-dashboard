@@ -34,11 +34,11 @@ kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --pa
 4. Run(Submit) the Streaming consumer jar
 
 Goto C:\spark\1.6.3\bin and execute:
-spark-submit --class com.senpuja.spark.kafka.demo.ProductStreamingConsumer C:\Users\UC230235\IdeaProjects\ProductDataProducer\dist\product-streaming-consumer-1.0.jar
+spark-submit --class com.senpuja.spark.kafka.demo.ProductStreamingConsumer C:\Users\User_Name\IdeaProjects\ProductDataProducer\dist\product-streaming-consumer-1.0.jar
 
 5. Run the DataProducer jar with the arguments like host, topic, time-interval, and the record range
 
-goto C:\Users\UC230235\IdeaProjects\ProductDataProducer\dist and run:
+goto C:\Users\User_Name\IdeaProjects\ProductDataProducer\dist and run:
 java -cp product-data-producer-1.0.jar com.senpuja.kafka.demo.ProductDataProducer localhost:9092 prod-data 0 30 50 1200
 
 6. run the index.js file
